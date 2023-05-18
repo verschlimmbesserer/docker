@@ -1,2 +1,28 @@
 ---
-# defaults file for template
+
+docker_repository_components: stable
+docker_repository_url: "https://download.docker.com/linux/{{ ansible_distribution | lower }}"
+docker_repository_gpg_key: "https://download.docker.com/linux/ubuntu/gpg"
+docker_state: present
+
+docker_packages:
+  - apt-transport-https
+  - ca-certificates
+  - curl
+  - software-properties-common
+  - docker-ce
+  - docker-ce-cli
+  - containerd.io
+
+docker_prerequisites:
+  - apt-transport-https
+  - ca-certificates
+  - curl
+  - software-properties-common
+  - python3-pip
+  - virtualenv
+  - python3-setuptools
+  - gnupg
+  - lsb-release
+
+docker_daemon_config: {}

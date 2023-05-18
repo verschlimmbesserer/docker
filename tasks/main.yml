@@ -1,2 +1,51 @@
 ---
-# tasks file for template
+
+- name: "Remove old Docker installation"
+  ansible.builtin.apt:
+    name: "{{ docker_package_remove }}"
+    state: absent
+
+- name: "Install Prerequisites Packages"
+  ansible.builtin.apt:
+    name: "{{ docker_prerequisites }}"
+    state: present
+    update_cache: true
+
+- name: Configure Docker-CE Repository
+  ansible.builtin.deb822_repository:
+    name: docker
+    types: deb
+    uris: "{{ docker_repository_url }}"
+    suites: '{{ ansible_distribution_release }}'
+    components: "{{ docker_repository_components }}"
+    architectures: amd64
+    signed_by: "{{ docker_repository_gpg_key }}"
+    state: present
+
+- name: Update Repositories
+  ansible.builtin.apt:
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Install Docker-CE
+  ansible.builtin.apt:
+    name: "{{ docker_packages }}"
+    state: "{{ docker_state | default('present') }}"
+  notify:
+    - Docker start
+    - Containerd start
+
+- name: Create Docker group
+  ansible.builtin.group:
+    name: docker
+    state: present
+
+- name: "Configure Docker daemon.json file"
+  ansible.builtin.template:
+    src: daemon.json.j2
+    dest: /etc/docker/daemon.json
+    owner: root
+    group: root
+    mode: "0644"
+  when: docker_daemon_config | length > 0
+  notify: Docker restart

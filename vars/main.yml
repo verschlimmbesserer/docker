@@ -1,2 +1,8 @@
 ---
-# vars file for template
+
+docker_package_remove:
+  - docker
+  - docker-engine
+  - docker.io
+  - containerd
+  - runc
