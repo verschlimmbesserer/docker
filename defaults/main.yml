@@ -6,13 +6,10 @@ docker_repository_gpg_key: "https://download.docker.com/linux/ubuntu/gpg"
 docker_state: present
 
 docker_packages:
-  - apt-transport-https
-  - ca-certificates
-  - curl
-  - software-properties-common
   - docker-ce
   - docker-ce-cli
   - containerd.io
+  - python3-docker
 
 docker_prerequisites:
   - apt-transport-https
